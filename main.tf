@@ -4,7 +4,7 @@ terraform {
   }
 }
 provider "vsphere" {
-  vsphere_server       = "10.213.126.14"
+  vsphere_server       = "10.213.128.14"
   user                 = "administrator@vsphere.local"
   password             = var.vc_password
   allow_unverified_ssl = true
