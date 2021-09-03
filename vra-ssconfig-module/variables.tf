@@ -19,6 +19,9 @@ variable "memory" {
     default = 8192
 
 }
+variable "dns_servers" {
+  
+}
 
 ### initial config
 variable "ssconfig_password" {}

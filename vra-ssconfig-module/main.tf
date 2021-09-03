@@ -59,45 +59,48 @@ resource "vsphere_virtual_machine" "vm" {
   }
   vapp {
     properties = {
-      "mgmt-ip"    = var.mgmt-ip
-      "mgmt-mask"  = var.mgmt-mask
-      "default-gw" = var.default-gw
+      "vami.hostname"   = data.vsphere_ovf_vm_template.ovf.name
+      "varoot-password" = var.ssconfig_password
+      "ip0"             = var.mgmt_ip
+      "netmask0"        = var.mgmt_mask
+      "gateway"         = var.default_gw
+      "DNS"             = var.dns_servers
     }
   }
 }
 
-resource "null_resource" "healthcheck" {
-  triggers = {
-    avi_addresses = vsphere_virtual_machine.vm.guest_ip_addresses[0]
-    avi-endpoint  = "avic.lab01.one"
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = "${path.module}/healthcheck.sh"
-    environment = {
-      ENDPOINT = self.triggers.avi-endpoint
-    }
-  }
-}
+# resource "null_resource" "healthcheck" {
+#   triggers = {
+#     avi_addresses = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+#     avi-endpoint  = "avic.lab01.one"
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = "${path.module}/healthcheck.sh"
+#     environment = {
+#       ENDPOINT = self.triggers.avi-endpoint
+#     }
+#   }
+# }
 
-resource "null_resource" "updateuser" {
-  triggers = {
-    avi-endpoint = "avic.lab01.one"
-    avi-username = "admin"
-    avi-oldpass  = "58NFaGDJm(PJH0G"
-    avi-newpass  = var.admin-password
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = "${path.module}/updateuser.sh"
-    environment = {
-      ENDPOINT = self.triggers.avi-endpoint
-      AVIUSER  = self.triggers.avi-username
-      OLDPASS  = self.triggers.avi-oldpass
-      NEWPASS  = self.triggers.avi-newpass
-    }
-  }
-  depends_on = [
-    null_resource.healthcheck
-  ]
-}
+# resource "null_resource" "updateuser" {
+#   triggers = {
+#     avi-endpoint = "avic.lab01.one"
+#     avi-username = "admin"
+#     avi-oldpass  = "58NFaGDJm(PJH0G"
+#     avi-newpass  = var.admin-password
+#   }
+#   provisioner "local-exec" {
+#     interpreter = ["/bin/bash", "-c"]
+#     command     = "${path.module}/updateuser.sh"
+#     environment = {
+#       ENDPOINT = self.triggers.avi-endpoint
+#       AVIUSER  = self.triggers.avi-username
+#       OLDPASS  = self.triggers.avi-oldpass
+#       NEWPASS  = self.triggers.avi-newpass
+#     }
+#   }
+#   depends_on = [
+#     null_resource.healthcheck
+#   ]
+# }
