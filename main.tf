@@ -22,10 +22,12 @@ module "avi-controller" {
 
   ### appliance variables
   vm_name    = "vrassconfig"
-  mgmt-ip    = "10.213.126.52"
-  mgmt-mask  = "255.255.255.0"
-  default-gw = "10.213.126.1"
+  mgmt_ip    = "10.213.126.52"
+  default_gw = "10.213.126.1"
 
   ### initial config
-  admin-password = var.ssconfig_password
+  ssconfig_password = var.ssconfig_password
+}
+
+resource "vsphere_virtual_machine" "vm" {
 }

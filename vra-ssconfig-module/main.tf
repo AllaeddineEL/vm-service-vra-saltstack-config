@@ -37,8 +37,8 @@ data "vsphere_ovf_vm_template" "ovf" {
 resource "vsphere_virtual_machine" "vm" {
   datacenter_id = data.vsphere_datacenter.datacenter.id
   name          = data.vsphere_ovf_vm_template.ovf.name
-  num_cpus      = data.vsphere_ovf_vm_template.ovf.num_cpus
-  memory        = data.vsphere_ovf_vm_template.ovf.memory
+  num_cpus      = var.num_cpus # data.vsphere_ovf_vm_template.ovf.num_cpus
+  memory        = var.memory   #data.vsphere_ovf_vm_template.ovf.memory
   guest_id      = data.vsphere_ovf_vm_template.ovf.guest_id
 
   resource_pool_id = data.vsphere_ovf_vm_template.ovf.resource_pool_id
@@ -54,7 +54,8 @@ resource "vsphere_virtual_machine" "vm" {
   ovf_deploy {
     disk_provisioning = "thin"
     ovf_network_map   = data.vsphere_ovf_vm_template.ovf.ovf_network_map
-    remote_ovf_url    = data.vsphere_ovf_vm_template.ovf.remote_ovf_url
+    #remote_ovf_url    = data.vsphere_ovf_vm_template.ovf.remote_ovf_url
+    local_ovf_path = "${path.root}/artifacts/VMware-vRealize-Automation-SaltStack-Config-8.5.0.0-18427593_OVF10.ova"
   }
   vapp {
     properties = {
