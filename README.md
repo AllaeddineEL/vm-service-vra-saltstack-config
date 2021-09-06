@@ -64,5 +64,5 @@ Dependencies
 ------------
 
 1. Download the **VMware vRealize Automation SaltStack Config 8.5 virtual appliance** from customer connect [here](https://customerconnect.vmware.com/downloads/details?downloadGroup=VRA-SSC-850&productId=1184&rPId=70960)
-2. Download **VMware vRealize Automation SaltStack SecOps License** from customer connect [here](https://customerconnect.vmware.com/downloads/details?downloadGroup=VRA-SSSO-840&productId=1184&rPId=70960)
-3. Place the downloaded file into [artifacts](artifacts) folder 
+2. Download and unzip the **VMware vRealize Automation SaltStack SecOps License** from customer connect [here](https://customerconnect.vmware.com/downloads/details?downloadGroup=VRA-SSSO-840&productId=1184&rPId=70960). For more details click [here](https://docs.vmware.com/en/VMware-vRealize-Automation-SaltStack-Config/8.5/install-configure-saltstack-config/GUID-39650C9F-E343-4CDF-9E1E-1A0DFFDFAF61.html)
+3. Place the downloaded and the extracted files into [artifacts](artifacts) folder
