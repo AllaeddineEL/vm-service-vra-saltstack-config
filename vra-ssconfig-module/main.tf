@@ -35,6 +35,7 @@ data "vsphere_ovf_vm_template" "ovf" {
 }
 
 resource "vsphere_virtual_machine" "vm" {
+  annotation    = "VMware vRealize Automation SaltStack Config"
   datacenter_id = data.vsphere_datacenter.datacenter.id
   name          = data.vsphere_ovf_vm_template.ovf.name
   num_cpus      = var.num_cpus # data.vsphere_ovf_vm_template.ovf.num_cpus
@@ -67,21 +68,74 @@ resource "vsphere_virtual_machine" "vm" {
       "DNS"             = var.dns_servers
     }
   }
+  lifecycle {
+    ignore_changes = [
+      host_system_id,
+      vapp[0].properties["varoot-password"]
+    ]
+  }
 }
 
-# resource "null_resource" "healthcheck" {
-#   triggers = {
-#     avi_addresses = vsphere_virtual_machine.vm.guest_ip_addresses[0]
-#     avi-endpoint  = "avic.lab01.one"
-#   }
-#   provisioner "local-exec" {
-#     interpreter = ["/bin/bash", "-c"]
-#     command     = "${path.module}/healthcheck.sh"
-#     environment = {
-#       ENDPOINT = self.triggers.avi-endpoint
-#     }
-#   }
-# }
+resource "null_resource" "copy_license" {
+  triggers = {
+    ssconfig_addresse = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/artifacts/raas.license"
+    destination = "/etc/raas/raas.license"
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = var.ssconfig_password
+      host     = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+    }
+  }
+
+
+  provisioner "remote-exec" {
+    inline = [
+      "chown raas:raas /etc/raas/raas.license",
+      "chmod 400 /etc/raas/raas.license",
+      "systemctl restart raas"
+    ]
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = var.ssconfig_password
+      host     = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+    }
+  }
+}
+resource "null_resource" "copy_salt_job" {
+  triggers = {
+    ssconfig_addresse = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/artifacts/salt-job"
+    destination = "/root"
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = var.ssconfig_password
+      host     = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+    }
+  }
+
+
+  provisioner "remote-exec" {
+    inline = [
+      "python3 /root/salt-job/salt-env.py",
+    ]
+    connection {
+      type     = "ssh"
+      user     = "root"
+      password = var.ssconfig_password
+      host     = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+    }
+  }
+}
 
 # resource "null_resource" "updateuser" {
 #   triggers = {
