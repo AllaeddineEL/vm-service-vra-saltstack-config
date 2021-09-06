@@ -1,6 +1,10 @@
 terraform {
   required_providers {
     vsphere = "~> 2.0"
+    kubernetes-alpha = {
+      source  = "hashicorp/kubernetes-alpha"
+      version = "0.6.0"
+    }
   }
 }
 provider "vsphere" {
@@ -8,6 +12,9 @@ provider "vsphere" {
   user                 = "administrator@vsphere.local"
   password             = var.vc_password
   allow_unverified_ssl = true
+}
+provider "kubernetes-alpha" {
+  config_path = "~/.kube/config" // path to kubeconfig
 }
 
 module "avi-controller" {
@@ -30,4 +37,6 @@ module "avi-controller" {
   ssconfig_password = var.ssconfig_password
 }
 
-
+module "centos_vm" {
+  source = "./vm-service-module"
+}
