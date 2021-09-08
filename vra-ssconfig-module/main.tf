@@ -38,8 +38,8 @@ resource "vsphere_virtual_machine" "vm" {
   annotation    = "VMware vRealize Automation SaltStack Config"
   datacenter_id = data.vsphere_datacenter.datacenter.id
   name          = data.vsphere_ovf_vm_template.ovf.name
-  num_cpus      = var.num_cpus # data.vsphere_ovf_vm_template.ovf.num_cpus
-  memory        = var.memory   #data.vsphere_ovf_vm_template.ovf.memory
+  num_cpus      = var.num_cpus
+  memory        = var.memory
   guest_id      = data.vsphere_ovf_vm_template.ovf.guest_id
 
   resource_pool_id = data.vsphere_ovf_vm_template.ovf.resource_pool_id
