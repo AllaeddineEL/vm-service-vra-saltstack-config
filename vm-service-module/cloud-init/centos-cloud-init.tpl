@@ -1,14 +1,17 @@
 #cloud-config
 ssh_pwauth: True
-chpasswd:
-  list: |
-    centos:VMware1!
-  expire: false
 users:
+  - default
   - name: centos
     sudo: ALL=(ALL) NOPASSWD:ALL
     groups: sudo
-    shell: /bin/bash
+    lock_passwd: False
+    passwd: $6$FrC8cVgH7KM6Khyd$I4yf9O4C/dxHoMhyhz2lLOT4KzV4gUwUa1VghFmfCkLt8ne0fq2QT4FDPcH1sq8UYHToj.Tkg54ZUzfxAR4Ej.
+    shell: /bin/bash  
+chpasswd:
+  list: |
+    centos:$6$FrC8cVgH7KM6Khyd$I4yf9O4C/dxHoMhyhz2lLOT4KzV4gUwUa1VghFmfCkLt8ne0fq2QT4FDPcH1sq8UYHToj.Tkg54ZUzfxAR4Ej.
+  expire: false    
 network:
   version: 2
   ethernets:

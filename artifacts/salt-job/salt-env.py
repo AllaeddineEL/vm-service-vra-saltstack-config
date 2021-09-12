@@ -23,6 +23,16 @@ else:
     apps = client.api.fs.save_file(saltenv='demo',
                                    path='/nginx/init.sls',
                                    contents=file_contents)
+
+tgt = client.api.tgt.get_target_group(name="DemoWeb")
+
+if tgt.ret['count'] == 0:
+    tgt = client.api.tgt.save_target_group(
+        tgt={'*': {
+            'tgt_type': 'grain',
+            'tgt': 'role:web'
+        }}, name='DemoWeb')
+
 j = client.api.job.get_jobs(name="Demo Nginx for VM Services")
 
 if j.ret['count'] == 0:

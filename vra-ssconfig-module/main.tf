@@ -77,6 +77,9 @@ resource "vsphere_virtual_machine" "vm" {
 }
 
 resource "null_resource" "copy_license" {
+  depends_on = [
+    null_resource.copy_salt_job
+  ]
   triggers = {
     ssconfig_addresse = vsphere_virtual_machine.vm.guest_ip_addresses[0]
   }
