@@ -187,4 +187,5 @@ After provisioning all the required resource, we need to finish setting up SaltS
     ![select job](images/select_job.png)
     * then run the job by clicking on **Run Now**
     ![run job](images/run_job.png)
-5. For configuring and using **SaltStack SecOps**, please refer to this [documentation](https://docs.vmware.com/en/VMware-vRealize-Automation-SaltStack-Config/8.5/using-and-managing-saltstack-secops/GUID-03D3148D-9C3D-4930-B095-C19F362D78FA.html)      
+5. Put the IP addresses from the terraform output in your browser      
+6. For configuring and using **SaltStack SecOps**, please refer to this [documentation](https://docs.vmware.com/en/VMware-vRealize-Automation-SaltStack-Config/8.5/using-and-managing-saltstack-secops/GUID-03D3148D-9C3D-4930-B095-C19F362D78FA.html)      
