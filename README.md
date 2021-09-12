@@ -75,19 +75,19 @@ Dependencies
 
 Deploy your resources
 -------------
-1. `cd` to the route of this repo
-2. rename or make a copy of [secrets.auto.tfvars.example](secrets.auto.tfvars.example) to `secrets.auto.tfvars`
+1. In your terminal window, change directory `cd` to the route of this repo
+2. Rename or make a copy of [secrets.auto.tfvars.example](secrets.auto.tfvars.example) to `secrets.auto.tfvars`
 ```
 mv secrets.auto.tfvars.example secrets.auto.tfvars
 ```
-3. put your vCenter password and your desired SaltStack Config SSH password in `secrets.auto.tfvars`
-4. update the vsphere provider in [providers.tf](providers.tf) with your parameters, specifically  
+3. Put your vCenter password and your desired SaltStack Config SSH password in `secrets.auto.tfvars`
+4. Update the vsphere provider in [providers.tf](providers.tf) with your parameters, specifically  
 
 ```
 vsphere_server       = "10.213.128.14"
 user                 = "administrator@vsphere.local"
 ```
-5. put the parameters from your vSphere environment in for ssconfig OVA [main.tf](main.tf)
+5. Put the parameters from your vSphere environment in for ssconfig OVA [main.tf](main.tf)
 ```
 datacenter = "Pacific-Datacenter"
 cluster    = "Workload-Cluster"
@@ -101,7 +101,7 @@ mgmt_ip     = "10.213.128.50" # the static ip of ssconfig service
 default_gw  = "10.213.128.1"
 dns_servers = "10.192.2.10,10.192.2.11"
 ```
-6. depending on vSphere with Tanzu networking setup either `nsx-t` or `vsphere-distributed`, comment out one vm modules blocks and make the required edits like `vsphere_namespace` or `vm_storage_class`
+6. Depending on vSphere with Tanzu networking setup either `nsx-t` or `vsphere-distributed`, comment out one vm modules blocks and make the required edits like `vsphere_namespace` or `vm_storage_class`
 ```
 ################## NSX-T Networking ##############
 # module "centos_vm" {
@@ -138,7 +138,7 @@ dns_servers = "10.192.2.10,10.192.2.11"
 #   vm_storage_class  = "tanzu"
 # }
 ```
-7. grab a fresh token from your supervisor cluster and change your local kubectl config context to the desired vSphere Namespace
+7. Grab a fresh token from your supervisor cluster and change your local kubectl config context to the desired vSphere Namespace
 ```
 kubectl vsphere login --server=wcp.haas-444.pez.vmware.com \
 -u administrator@vsphere.local \
@@ -149,11 +149,11 @@ kubectl vsphere login --server=wcp.haas-444.pez.vmware.com \
 kubectl config use-context demo
 
 ```
-8. after finishing the previous steps, you can start provisioning your resources 
+8. After finishing the previous steps, you can start provisioning your resources 
 ```
 terraform apply
 ```
-9. note the ip address from the terraform output to access the nginx web server in your browser 
+9. Note the ip address from the terraform output to access the nginx web server(s) in your browser 
 ```
 Apply complete! Resources: 8 added, 0 changed, 0 destroyed.
 
@@ -162,4 +162,29 @@ Outputs:
 centos_web_lb_ip = "10.212.131.5"
 ubuntu_web_lb_ip = "10.212.131.4"
 ```
-   
+
+SaltStack Config
+----------------
+
+After provisioning all the required resource, we need to finish setting up SaltStack Config
+
+1. Login to you SaltStack Config user interface `https://<satl_stack_config_ip>` e.g. `https://10.213.128.50`
+2. Accept the Salt master’s key 
+    * from the top left navigation bar, click the **Menu**, then select **Administration** to access the Administration workspace. Click the **Master Keys** tab.
+    * from the side menu, click Pending to show a list of all pending master keys
+    * check the box next to the master key to select it. Then, click Accept Key
+    ![accept master key](images/accept_master_key.png)
+3. Accept the minion keys
+    * After you accept the master key, an alert appears indicating you have pending keys to accept. To accept these minion keys, go to **Minion Keys** > **Pending**
+    * Check the boxes next to your minions to select them. Then, click **Accept Key**.
+    ![accept minions key](images/accept_minions_keys.png)
+4. Run the **Demo Nginx for VM Service** Job to install Nginx on the VMs created using vSphere VM Services
+    * select **Minions** form the side menu
+    * click on **DemoWeb** from the target list
+    * then click on **Run Job**
+    ![demo web target](images/targets.png)
+    * select **Demo Nginx for VM Service** Job from the drop-down list
+    ![select job](images/select_job.png)
+    * then run the job by clicking on **Run Now**
+    ![run job](images/run_job.png)
+5. For configuring and using SaltStack SecOps, please refer to this [documentation](https://docs.vmware.com/en/VMware-vRealize-Automation-SaltStack-Config/8.5/using-and-managing-saltstack-secops/GUID-03D3148D-9C3D-4930-B095-C19F362D78FA.html)      
