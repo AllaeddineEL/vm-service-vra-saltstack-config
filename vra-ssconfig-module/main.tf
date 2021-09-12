@@ -112,7 +112,7 @@ resource "null_resource" "copy_license" {
 }
 resource "null_resource" "copy_salt_job" {
   triggers = {
-    ssconfig_addresse = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+    dir_sha1 = sha1(join("", [for f in fileset("${path.root}/artifacts/salt-job", "*") : filesha1(format("%s/%s", "${path.root}/artifacts/salt-job", f))]))
   }
 
   provisioner "file" {

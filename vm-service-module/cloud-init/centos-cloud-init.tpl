@@ -26,7 +26,6 @@ yum_repos:
     gpgcheck: false
 cloud_config_modules:
   - yum-add-repo
-  - runcmd
 cloud_final_modules:
   - salt-minion
 salt_minion:
@@ -35,6 +34,3 @@ salt_minion:
   grains:
     role:
       - web
-runcmd:
-  - firewall-offline-cmd --add-service=http
-  - firewall-cmd --reload
