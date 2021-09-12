@@ -83,6 +83,7 @@ YAML
 
 }
 resource "kubectl_manifest" "ssh_svc" {
+  count     = var.vm_ssh_enabled ? 1 : 0
   wait      = true
   yaml_body = <<YAML
 apiVersion: vmoperator.vmware.com/v1alpha1
