@@ -27,3 +27,6 @@ variable "ssconfig_ip" {
 variable "vm_storage_class" {
   default = "pacific-gold-storage-policy"
 }
+variable "vm_ssh_enabled" {
+  default = false
+}
