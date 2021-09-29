@@ -27,7 +27,7 @@ data "vsphere_ovf_vm_template" "ovf" {
   resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
   host_system_id   = data.vsphere_host.host.id
-  local_ovf_path   = "${path.root}/artifacts/VMware-vRealize-Automation-SaltStack-Config-8.5.0.0-18427593_OVF10.ova"
+  local_ovf_path   = "${path.root}/artifacts/VMware-vRealize-Automation-SaltStack-Config-8.5.1.0-18565512_OVF10.ova"
 
   ovf_network_map = {
     "Management" = data.vsphere_network.network.id
@@ -56,7 +56,7 @@ resource "vsphere_virtual_machine" "vm" {
     disk_provisioning = "thin"
     ovf_network_map   = data.vsphere_ovf_vm_template.ovf.ovf_network_map
     #remote_ovf_url    = data.vsphere_ovf_vm_template.ovf.remote_ovf_url
-    local_ovf_path = "${path.root}/artifacts/VMware-vRealize-Automation-SaltStack-Config-8.5.0.0-18427593_OVF10.ova"
+    local_ovf_path = data.vsphere_ovf_vm_template.ovf.local_ovf_path #"${path.root}/artifacts/VMware-vRealize-Automation-SaltStack-Config-8.5.0.0-18427593_OVF10.ova"
   }
   vapp {
     properties = {
@@ -112,7 +112,8 @@ resource "null_resource" "copy_license" {
 }
 resource "null_resource" "copy_salt_job" {
   triggers = {
-    dir_sha1 = sha1(join("", [for f in fileset("${path.root}/artifacts/salt-job", "*") : filesha1(format("%s/%s", "${path.root}/artifacts/salt-job", f))]))
+    ssconfig_addresse = vsphere_virtual_machine.vm.guest_ip_addresses[0]
+    dir_sha1          = sha1(join("", [for f in fileset("${path.root}/artifacts/salt-job", "*") : filesha1(format("%s/%s", "${path.root}/artifacts/salt-job", f))]))
   }
 
   provisioner "file" {
@@ -139,25 +140,3 @@ resource "null_resource" "copy_salt_job" {
     }
   }
 }
-
-# resource "null_resource" "updateuser" {
-#   triggers = {
-#     avi-endpoint = "avic.lab01.one"
-#     avi-username = "admin"
-#     avi-oldpass  = "58NFaGDJm(PJH0G"
-#     avi-newpass  = var.admin-password
-#   }
-#   provisioner "local-exec" {
-#     interpreter = ["/bin/bash", "-c"]
-#     command     = "${path.module}/updateuser.sh"
-#     environment = {
-#       ENDPOINT = self.triggers.avi-endpoint
-#       AVIUSER  = self.triggers.avi-username
-#       OLDPASS  = self.triggers.avi-oldpass
-#       NEWPASS  = self.triggers.avi-newpass
-#     }
-#   }
-#   depends_on = [
-#     null_resource.healthcheck
-#   ]
-# }
