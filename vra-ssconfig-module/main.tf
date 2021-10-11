@@ -88,6 +88,8 @@ resource "null_resource" "copy_license" {
     source      = "${path.root}/artifacts/raas.license"
     destination = "/etc/raas/raas.license"
     connection {
+      agent    = false
+      timeout  = "5m"
       type     = "ssh"
       user     = "root"
       password = var.ssconfig_password
@@ -103,6 +105,8 @@ resource "null_resource" "copy_license" {
       "systemctl restart raas"
     ]
     connection {
+      agent    = false
+      timeout  = "5m"
       type     = "ssh"
       user     = "root"
       password = var.ssconfig_password
@@ -120,6 +124,8 @@ resource "null_resource" "copy_salt_job" {
     source      = "${path.root}/artifacts/salt-job"
     destination = "/root"
     connection {
+      agent    = false
+      timeout  = "5m"
       type     = "ssh"
       user     = "root"
       password = var.ssconfig_password
@@ -133,6 +139,8 @@ resource "null_resource" "copy_salt_job" {
       "python3 /root/salt-job/salt-env.py",
     ]
     connection {
+      agent    = false
+      timeout  = "5m"
       type     = "ssh"
       user     = "root"
       password = var.ssconfig_password

@@ -7,7 +7,7 @@ terraform {
   }
 }
 provider "vsphere" {
-  vsphere_server       = "10.213.128.14"
+  vsphere_server       = "pacific-vcsa.haas-492.pez.vmware.com"
   user                 = "administrator@vsphere.local"
   password             = var.vc_password
   allow_unverified_ssl = true

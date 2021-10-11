@@ -29,4 +29,4 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 artifacts/raas.license
-artifacts/VMware-vRealize-Automation-SaltStack-Config-8.5.0.0-18427593_OVF10.ova
+artifacts/VMware-vRealize-Automation-SaltStack-Config*
